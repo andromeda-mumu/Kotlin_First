@@ -291,8 +291,8 @@ fun change(){
     b = a.also { a=3 }
     println(b)//2
 }
-/** 将代码标记为不完整
- * 评论：新功能，好东西
+/** 将代码标记为不完整 。会在TODO工具窗口看到这行代码
+ * 评论：新功能，好东西。
  * */
 fun calcTaxes():BigDecimal = TODO("waiting for feedback from accounting")
 
