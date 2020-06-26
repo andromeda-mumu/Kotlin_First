@@ -105,7 +105,8 @@ class BB(
 /** 调用超类实现 派生类的代码可以使用super关键字调用起超类的函数与属性访问器的实现*/
 open class RectB{
     open fun draw(){
-        println("drawing a rect")}
+        println("drawing a rect")
+    }
     val borderColor:String get()="black"
 }
 class FilledRect:RectB(){
