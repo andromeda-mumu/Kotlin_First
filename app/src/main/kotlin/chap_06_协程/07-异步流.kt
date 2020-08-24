@@ -1,6 +1,12 @@
 package chap_06_协程
 
+import android.renderscript.Sampler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
+import kotlin.system.measureNanoTime
+import kotlin.system.measureTimeMillis
 
 /**
  * Created by wangjiao on 2020/8/20.
@@ -201,5 +207,241 @@ suspend fun performRequest(request:Int):String{
 //    simple().collect { v -> println(v) }
 //}
 
-/** */
+/** flowOn操作符，可以更改流发射的上下文
+ * 改变了 流的顺序，收集和发射在不同的协程里并行执行
+ * */
+/*fun simple(): Flow<Int> = flow{
+    for (i in 1..3){
+        Thread.sleep(100)
+        println("emiiting $i  ${Thread.currentThread().name}")
+        emit(i)
+    }
+}.flowOn(Dispatchers.Default) //在流构建器中改变消耗CPU代码上下文的正确方式
+fun main()= runBlocking {
+    simple().collect { value ->
+        println("collected $value ${Thread.currentThread().name}")
+    }
+}*/
 
+/** 缓冲 */
+
+//fun simple():Flow<Int> = flow {
+//    for(i in 1..3){
+//        delay(100)
+//        emit(1)
+//    }
+//}
+//fun main()= runBlocking<Unit> {
+//    val time = measureTimeMillis {
+//        simple()
+//            .buffer()//加入buffer后，从每个数字处理400ms，总共1200ms.变为了，第一个数字100ms,每个数组各300ms，总共1000ms。
+//            .collect {
+//                value->
+//            delay(300)
+//            println(value)
+//        }
+//    }
+//    println("collected in $time ms")
+//}
+
+/** 合并
+ * 当流代表部分操作结果或操作状态更新时，没必要处理每个值，只处理最新的那个。当收集器处理太慢时，conflate操作符可以用于跳过中间值.
+ * */
+
+//fun simple():Flow<Int> = flow {
+//    for(i in 1..3){
+//        delay(100)
+//        emit(i)
+//    }
+//}
+//fun main()= runBlocking {
+//    val time = measureTimeMillis {
+//        simple()
+//            .conflate() //虽然第一个数字还在处理，但第二第三个数字已经产生了，
+//            .collect { value ->
+//                delay(300)
+//                println(value)
+//            }
+//    }
+//    println("collected in $time ms")
+//}
+
+/** 处理最新值
+ * 当发射器和收集器很慢的时候，合并是加快处理速度的一种方式。另一种方式是取消收集器，每次发射新值的时候重新启动它。
+ * */
+
+//fun simple():Flow<Int> = flow {
+//    for(i in 1..3){
+//        delay(100)
+//        emit(i)
+//    }
+//}
+//fun main()= runBlocking {
+//    val time = measureTimeMillis {
+//        simple()
+//            .collectLatest { value ->//取消并重新发射最后一个值
+//                println("collecting $value")
+//                delay(300)
+//                println("done $value")
+//            }
+//    }
+//    println("collected in $time ms")
+//}
+
+/**--------------组合多个流----------------*/
+/** zip */
+//suspend fun main(){
+//    val nums = (1..3).asFlow()
+//    val strs = flowOf("one","two","three")
+//    nums.zip(strs) {a,b ->"$a -> $b"}//组合单个字符串
+//        .collect { println(it) }
+//}
+
+/** combine  */
+//suspend fun main(){
+//    val nums = (1..3).asFlow().onEach { delay(300) }
+//    val strs = flowOf("one","two","three").onEach { delay(400) }
+//    val time = System.currentTimeMillis()
+//    nums.combine(strs){a,b -> "$a -> $b"}
+//        .collect { value ->
+//            println("$value at ${System.currentTimeMillis()-time} ms from start")
+//        }
+//}
+
+/** 展平流
+ *
+ *
+ * */
+fun requestFlow(i:Int):Flow<String> = flow {
+    emit("$i :first")
+    delay(500)
+    emit("$i: second")
+}
+//fun main() = runBlocking<Unit> {
+//    (1..3).asFlow().map { requestFlow(it) } //这将得到一个包含流的流（Flow<Flow<String>）
+//}
+
+/** flatMapConcat
+ *  连接模式由 flatMapConcat与flattenConcat操作符实现。它们在等待内部流完成之前开始收集下一个值 。
+ * */
+//suspend fun main(){
+//    val starttime = System.currentTimeMillis()
+//    (1..3).asFlow().onEach { delay(100) }
+//        .flatMapConcat { requestFlow(it) }
+//        .collect { value ->
+//            println("$value at ${System.currentTimeMillis()-starttime} ms from start ")
+//        }
+//}
+
+/** flatMapMerge
+ * 并发收集所有传入的流，并将她们的值合并到一个单独的流，一遍尽快发射值
+ * */
+
+//fun main()= runBlocking<Unit> {
+//    val startTime = System.currentTimeMillis()
+//    (1..3).asFlow().onEach { delay(100) }
+//        .flatMapMerge { requestFlow(it) }
+//        .collect { value ->
+//            println("$value at ${System.currentTimeMillis()-startTime} ms from start ")
+//        }
+//}
+
+/** flatMapLatest */
+//fun main()= runBlocking<Unit> {
+//    val startTime = System.currentTimeMillis()
+//    (1..3).asFlow().onEach { delay(100) }
+//        .flatMapLatest { requestFlow(it) }
+//        .collect { value ->
+//            println("$value at ${System.currentTimeMillis()-startTime} ms from start ")
+//        }
+//}
+
+/**--------------流异常----------------*/
+/** 收集器 try 与 catch */
+//fun simple():Flow<Int> = flow {
+//    for( i in 1..3){
+//        println("emitting $i")
+//        emit(i)
+//    }
+//}
+//fun main()= runBlocking<Unit> {
+//    try{
+//        simple().collect { value ->
+//            println(value)
+//            check(value <=1){"colloected $value"}
+//        }
+//    }catch (e:Throwable){
+//        println("Caught $e")
+//    }
+//}
+
+/** 一切都已捕获 */
+//fun simple():Flow<String> = flow {
+//    for(i in 1..3){
+//        println("emitting $i")
+//        emit(i)
+//    }
+//}.map { value->
+//    check(value <=1){"crashed on $value "}
+//    "string $value"
+//}
+//fun main()= runBlocking<Unit> {
+//    try{
+//        simple().collect { value -> println(value) }
+//    }catch (e:Throwable){
+//        println("caught $e")
+//    }
+//}
+/** 异常透明性*/
+//fun main()= runBlocking<Unit> {
+//    simple().catch { e -> emit("caught $e") }.collect { value -> println(value) }
+//}
+
+/** 透明捕获 如果collect{} 块抛出异常，则异常会逃逸*/
+//fun simple():Flow<Int> = flow{
+//    for(i in 1..3){
+//        println("Emitting $i")
+//        emit(i)
+//    }
+//}
+//fun  main() = runBlocking<Unit> {
+//    simple().catch { e-> println("caught $e") }
+//        .collect { value ->
+//            check(value <=1){"collected $value"}
+//            println(value)
+//        }
+//}
+
+/** 声明式捕获 我们可以将catch操作符与处理所有异常的期望相结合，将collect操作符的代码块移动到onEach汇总，并将其放到catch操作符之前。
+ * 收集流必须由调用无参的collect()来触发
+ * */
+//fun main()= runBlocking<Unit> {
+//    simple().onEach { value ->
+//    check(value <=1){"collect $value"}
+//        println(value)
+//    }.catch { e-> println("caught $e") }
+//        .collect()
+//}
+
+/**--------------流完成----------------*/
+/**
+ * 命令式finally块
+ * 除了try/catch 之外，收集器还能使用finally块再collect完成时执行一个动作
+ * */
+//fun simple():Flow<Int> = (1..3).asFlow()
+//fun main()= runBlocking<Unit> {
+//    try{
+//        simple().collect { value -> println(value) }
+//    }finally {
+//        println("done")
+//    }
+//}
+
+/** 声明式处理 onCompletion 过度操作符
+ * */
+//fun main() = runBlocking<Unit> {
+//    simple().onCompletion { println("done") }
+//        .collect { value -> println(value) }
+//}
+/** onCompletion优点是：lambda表达式的可空参数 Throwable可以用于确定流手机是正常完成还是有异常发生。*/
+fun simple():Flow<Int>
