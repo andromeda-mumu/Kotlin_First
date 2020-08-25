@@ -444,4 +444,4 @@ fun requestFlow(i:Int):Flow<String> = flow {
 //        .collect { value -> println(value) }
 //}
 /** onCompletion优点是：lambda表达式的可空参数 Throwable可以用于确定流手机是正常完成还是有异常发生。*/
-fun simple():Flow<Int>
+//fun simple():Flow<Int>
