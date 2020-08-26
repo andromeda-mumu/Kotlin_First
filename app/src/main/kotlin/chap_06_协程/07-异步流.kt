@@ -2,6 +2,7 @@ package chap_06_协程
 
 import android.renderscript.Sampler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
@@ -443,5 +444,60 @@ fun requestFlow(i:Int):Flow<String> = flow {
 //    simple().onCompletion { println("done") }
 //        .collect { value -> println(value) }
 //}
-/** onCompletion优点是：lambda表达式的可空参数 Throwable可以用于确定流手机是正常完成还是有异常发生。*/
-//fun simple():Flow<Int>
+/** onCompletion优点是：lambda表达式的可空参数 Throwable可以用于确定流手机是正常完成还是有异常发生。
+ * onCompletion 操作符与catch不同，它不处理异常。异常会流向下游，并提供给onCompletion操作符，并可以由catch操作符处理 * */
+//fun simple():Flow<Int> = flow{
+//    emit(1)
+//    throw RuntimeException()
+//}
+//fun main()=runBlocking<Unit>{
+//    simple()
+//        .onCompletion { cause ->if (cause!=null) println("Flow completed exceptionally") }
+//        .catch { cause -> println("caught exception") }
+//        .collect { value -> println(value) }
+//}
+
+/** 启动流 */
+//fun events():Flow<Int> = (1..3).asFlow().onEach { delay(100) }
+////fun main()= runBlocking<Unit> {
+////    events().onEach { event -> println("event:$event") }
+////        .collect()
+////    println("done")
+////}
+//
+///** 使用launchIn末端操作符可以在这里派上用场。不用等待流收集玩，即可立即执行下一步代码*/
+//fun main()= runBlocking<Unit> {
+//    events().onEach { event-> println("event $event") }
+//        .launchIn(this)//在单独协程中执行流
+//    println("done")
+//}
+
+/** 流取消检测
+ * 流构建器对每个发射值执行附加的ensureActive检测以进行取消。这意味着从flow{...}发出的繁忙循环是可以取消的
+ * */
+//fun foo():Flow<Int> = flow{
+//    for(i in 1..5){
+//        println("emiting $i")
+//        emit(i)
+//    }
+//}
+//fun main()= runBlocking<Unit> {
+////    foo().collect { value->
+////        if(value==3)cancel()
+////        println(value)
+////    }
+//    (1..5).asFlow().collect { value ->
+//        if(value ==3) cancel() //由于性能原因，大部分流操作不会执行取消检测
+//        println(value)
+//    }
+//}
+
+/** 让繁忙的流可取消*/
+//fun main()= runBlocking<Unit> {
+//    (1..5).asFlow().cancellable().collect { value ->
+//        if(value ==3)cancel()
+//        println(value)
+//    }
+//}
+
+/** 流与响应式流 */
