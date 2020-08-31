@@ -240,10 +240,42 @@ fun getRandomInt():Int{
 //    numbers.also { println("add new one $it") }.add("four")
 //}
 
-/** takeIf 与 taleUnless */
+/** takeIf 与 taleUnless
+ * 这两函数使你可以将对象状态嵌入到调用链中。
+ * 当以提供的谓词在对象上进行调用时，若该对象与谓词匹配，则takeIf返回此对象。否则返回NULL。
+ * takeIf是单个对象的过滤函数，反之，takeUnless
+ * */
+//fun main() {
+//    val number = Random.nextInt(100)
+//    val evenOrNull = number.takeIf { it%2==0 }
+//    val oddOrNull = number.takeUnless { it%2==0 }
+//    println("even :$evenOrNull,odd:$oddOrNull")
+//}
 
+/**
+ * 当在takeIf及takeUnless之后链式调用其他函数，不要忘记执行空检查或安全调用（？.）因为他们的返回值可为空
+ * */
+//fun main() {
+//    val str =""
+//    val caps = str.takeIf {it.isNotEmpty() }?.toUpperCase()
+////    val caps2 = str.takeIf{ it.isNotEmpty() }.toUpperCase() //编译不通过
+//    println(caps)
+//}
 
-
+/**
+ * takeIf与takeUnless与作用域函数一起特别有用。如let连接他们，以便在给定谓词匹配的对象上运行代码块。因此，在对象上调用takeIf ，然后通过安全调用(?.)调用let,对于
+ * 与谓词不匹配的对象，takeIf返回null,并且不调用let
+ * */
+fun displaySubstringPosition(input:String,sub:String){//其实，这个组合就是把java中多行的判断语句，放置于一行中，确实方便。链式调用，也容易理解，一气呵成
+    input.indexOf(sub).takeIf { it>=0 }?.let {  //?. 这个表达式，代表如果不为空，就可以执行后面的语句，如果为空，就不执行
+        println("the substring $sub is found in $input")
+        println("its start position is $it")
+    }
+}
+fun main() {
+    displaySubstringPosition("abc","a")
+    displaySubstringPosition("qwer","as")
+}
 
 
 
