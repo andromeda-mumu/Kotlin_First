@@ -1,5 +1,7 @@
 package chap_03
 
+import kotlinx.coroutines.channels.consumesAll
+
 /**
  * Created by mumu on 2020/6/20.
  * 功能描述：
@@ -26,6 +28,14 @@ object NotaNumber :Expr()
 fun eval(expr:Expr):Double=when(expr){
     is Const -> expr.num
     is Sum -> eval(expr.el)+ eval(expr.e2)
-    NotaNumber -> Double.NaN
+     NotaNumber -> Double.NaN  //不用is 也是可以的。
 }
 
+fun main() {
+    var expr = Const(11.0)
+    var data = eval(expr)
+    println(data)
+
+    var expr2 = NotaNumber
+    println(eval(expr2))
+}

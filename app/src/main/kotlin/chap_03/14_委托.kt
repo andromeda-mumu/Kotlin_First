@@ -48,7 +48,7 @@ class Derived6(b:Base6):Base6 by b{
 }
 //fun main(){
 //    val b = Base6Impl(10)
-//    Derived6(b).printMessage()
+//    Derived6(b).printMessage() //优先使用override覆盖的方法，而不是委托的b中的方法。
 //    Derived6(b).printMessageLine()
 //}
 
@@ -60,7 +60,9 @@ interface Base7{
 
 class Base7Impl(val x :Int):Base7{
     override val message = "Baseimpe :x =$x"
-    override fun print(){println(x)}
+    override fun print(){
+        println(x)
+    }
 }
 class Derived7(b:Base7):Base7 by b{
     override val message ="Message of Derived "
@@ -70,7 +72,7 @@ fun main(){
     val b = Base7Impl(10)
     val derived = Derived7(b)
     derived.print()
-    println(derived.message)
+    println(derived.message) //不是Baseimpe 而是Message of Derived。
 
 }
 /** 当使用带有default方法的接口进行委托时，即使实际的委托类型提供了其自身的实现也会调用默认实现。*/

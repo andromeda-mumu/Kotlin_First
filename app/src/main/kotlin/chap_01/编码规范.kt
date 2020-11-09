@@ -55,7 +55,7 @@ val isEmpty:Boolean get()="a".length==0
 val foo2:String
     get(){return ""}
 
-/** 对于具有初始化器的熟悉，如果初始化器很长，那么在等号后增加一个换行并将初始化器缩进四个空格*/
+/** 对于具有初始化器的属性，如果初始化器很长，那么在等号后增加一个换行并将初始化器缩进四个空格*/
 //private val defaultCharser: Charset?=
 //    EncodingRegistry.getInstance().getDefaultCharsetForPropertiesFiles(file)
 

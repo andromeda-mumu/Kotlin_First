@@ -35,9 +35,21 @@ interface My:Named{
     override val name:String get()="$firstName $lastNamee"
 }
 
+//class mmc(override val firstName: String, override val lastNamee: String) :My{
+//
+//}
 
+class mmc:My{
+    override val firstName: String
+        get() = "m"
+    override val lastNamee: String
+        get() = "c"
+
+}
 
 fun main(){
-    var child = Child()
-    child.foo()
+//    var child = Child()
+//    child.foo()
+    var m= mmc()
+    println(m.name)
 }

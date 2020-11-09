@@ -5,7 +5,7 @@ package chap_02
  * 功能描述：
  */
 fun main(){
-   e()
+   d()
 }
 
 /** 这里直接返回a() 导致end没有打印*/

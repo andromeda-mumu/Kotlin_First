@@ -31,6 +31,7 @@ class Subclass :Outer(){
     override val b = 5 //b 还是protected
 }
 class Unrelated(o:Outer){
+
     //o.a o.b 不可见
     //o.c o.d 可见
     //outter.Nested Nested::e 都不可见

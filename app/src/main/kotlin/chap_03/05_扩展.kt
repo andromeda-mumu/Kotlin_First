@@ -136,7 +136,7 @@ class DerivedCaller:BaseCaller(){
 fun main(){
     BaseCaller().call(Base2())
     DerivedCaller().call(Base2()) //分发接收者虚拟解析
-    DerivedCaller().call(Derived2()) //扩展接收者静态解析
+    DerivedCaller().call(Derived2()) //扩展接收者静态解析  其实这里还是跟传入Base2一样的结果
 
 //     Connection(Host("kotl.in"),443).connect()
 //    MyClass.printCompanion()

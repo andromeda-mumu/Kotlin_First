@@ -14,7 +14,7 @@ inline class Password(val value:String)
 /**
  * 内联类必须含有唯一的一个属性在主构造函数中初始化。在运行时，将使用这个唯一属性来表示内联类的实例
  * */
-val securePassword = Password("don't try this in production")
+val securePassword = Password("don't try this in production") //一个假容器，主要是里面的string.因此这是securePassword包含string,而不存在password这个对象。消除包装器。
 /** 不存在‘password’ 类的真实实例对象。
  *  在运行时，‘securePassword'仅仅包含’String'
  *  这就是内联类的主要特性：类的数据被‘内联’到该类使用的地方（内联函数中的代码被内联到该函数调用的地方）
@@ -42,7 +42,7 @@ interface Printable{
 inline class Name2(val s:String):Printable{
     override fun prettyPrint():String ="let's $s"
 }
-/** 禁止内联类参与到类的继承关系结构中，这以为着 内联类不能继承其他的类而且必须是final*/
+/** 禁止内联类参与到类的继承关系结构中，这以为着 内联类不能继承其他的类而且必须是final*/  //不能继承其他类，并且自身必须是final.
 //fun main(){
 //    val name = Name2("kotlin")
 //    print(name.prettyPrint())
@@ -106,6 +106,8 @@ fun main(){
     acceptNameTypeAlise(str) //正确 传递基础类型的实参 替代函数中别名类型的形参
 //    acceptNameInlineClass(str) //错误 不能出传递基础类型的实参 替代函数中内联类类型的形参
 
+    var ni = NameInlineClass(str)
+    acceptNameInlineClass(ni) //可以
 }
 
 /** 内联类的实验性状态

@@ -21,7 +21,7 @@ enum class Color(val rgb:Int){
     BLUE(0x0000ff)
 }
 
-/** 匿名类 枚举常量还可以声明其带有相应方法以及覆盖了基类方法都匿名类*/
+/** 匿名类 枚举常量还可以声明其带有相应方法以及覆盖了基类方法的匿名类*/
 enum class ProtocolState{
     WAITING{
         override fun signal()=TALKING
@@ -53,7 +53,11 @@ inline fun <reified T:Enum<T>> printAllValues(){
     print(enumValues<T>().joinToString { it.name })
 }
 
-@RequiresApi(Build.VERSION_CODES.N)
-fun main(){
-//    println(IntArithmetics.PLUS.applyAsInt(3,5))
+//@RequiresApi(Build.VERSION_CODES.N)
+//fun main(){
+////    println(IntArithmetics.PLUS.applyAsInt(3,5))
+//}
+
+fun main() {
+    printAllValues<ProtocolState>()
 }

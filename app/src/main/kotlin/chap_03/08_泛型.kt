@@ -39,7 +39,7 @@
 // * 在kotlin中，有一种方法向编译器解释这种情况，这称为声明处形变：我们可以标注Source的类型参数T来确保它仅从Source<T>成员中返回
 // * （生产）,为此，我们提供out修饰符
 // * */
-//interface Source<out T>{
+//interface Source<out T>{  //声明处型变
 //    fun nextT():T
 //}
 //fun demo(strs:Source<String>){
@@ -91,7 +91,7 @@
 // * */
 ///** 这里发生了类型投影，from不仅仅是一个数组，而是一个受限制的（投影的）数组：我们只可以调用返回类型为类型参数T的方法，这意味着只能调用get()
 // * 这就是使用处型变的用法，并且是对应于Java的Array<? extends Obejct>。*/
-//fun copy2(from:Array<out Any>,to:Array<Any>){}
+//fun copy2(from:Array<out Any>,to:Array<Any>){} //使用处型变，填子类。
 //
 //val ints2 :Array<Int> = arrayOf(1,2,4)
 //val any2 = Array<Any>(3){""}
@@ -101,7 +101,7 @@
 //
 ///** 也可以使用in投影一个类型,array<in String> 对应于Java中的Array<? super String> ，也就是说，你可以传递一个charSequence数组
 // * 或一个Object数组给fill函数*/
-//fun fill(dest:Array<in String>,value:String){}
+//fun fill(dest:Array<in String>,value:String){} // in 填父类
 //
 ///** 星投影 当对类型参数一无所知，但任然希望以安全的方式使用它，这里定义泛型类型的这种投影，该泛型类型的每个具体实例化将是该投影的子类型
 // * kotlin 为此提供了所谓的 星投影 语法
@@ -131,7 +131,7 @@
 ///** 泛型约束
 // * 上届：与java的extends对应
 // * */
-//fun <T : Comparable<T>> sort(list:List<T>){}
+//fun <T : Comparable<T>> sortA(list:List<T>){}
 ///** 冒号之后指定的类型是上届，只有comparable<T> 的子类型可以替代T */
 //fun b(){
 ////    sort(listOf(1,2,3)) //错误？Int不是Comparable<Int>的子类型？ 文档是成功的，是子类型

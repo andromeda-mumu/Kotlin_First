@@ -1,0 +1,7 @@
+1.inline 内联类，其实就是装箱操作，不是一个类型。其实就是穿了个马甲
+2. object{}  这是一个匿名对象
+3.object Named{} 是一个对象
+4.companion object Factory{} 伴生对象是写在类内部的对象，在需要的地方，可以直接用类来引用。如果伴生对象是匿名的，则可以使用 类名.companion 来指代这个匿名对象
+5.by 委托。在类声明的时候，可以不用完全复写接口的成员方法，交给委托的那个类就可以了。
+6.by Delegate，by后面跟着一个类，当把属性委托给另一个类实现时，会调用Delegate类中的getValue,和setValue
+7.延时属性，by lazy{} 其实和上面说的委托一样，交给lazy类里的lambda来实现的。

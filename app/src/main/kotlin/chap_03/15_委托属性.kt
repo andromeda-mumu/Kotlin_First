@@ -1,5 +1,6 @@
 package chap_03
 
+import androidx.appcompat.app.ActionBarDrawerToggle
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
@@ -16,13 +17,13 @@ import kotlin.reflect.KProperty
  * 为了涵盖这些，kotlin支持委托属性
  * */
 class Example2{
-    var p :String by Delegate()
+    var p :String by DelegateM()
 }
 /** 语法： by后面的表达式是委托。因为属性对应的get() 与set() 会被委托给它的getValue()与setVaule方法。属性的委托不必实现任何的接口
  * 但是需要提供一个getValue()函数
  * */
 
-class Delegate{
+class DelegateM{
     operator fun getValue(thisRef:Any?,property : KProperty<*>):String{
         return "$thisRef ,thank you for delegating '${property.name}' to me "
     }
@@ -37,7 +38,7 @@ class Delegate{
 //    println(e.p)
 //   e.p= "new"
 //}
-//
+
 
 /** 延迟属性：lazy（）是接受一个lambda并返回一个Lazy<T>实例的函数，返回的实例可作为实现延迟属性的委托：第一次调用get()会执行已传递给
  * lazy()的lambda表达式并记录结果，后续调用get()只是返回记录的结果
