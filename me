@@ -5,3 +5,11 @@
 5.by 委托。在类声明的时候，可以不用完全复写接口的成员方法，交给委托的那个类就可以了。
 6.by Delegate，by后面跟着一个类，当把属性委托给另一个类实现时，会调用Delegate类中的getValue,和setValue
 7.延时属性，by lazy{} 其实和上面说的委托一样，交给lazy类里的lambda来实现的。
+8.infix 中缀表达式，优先级低于算术运算，高于布尔运算。
+9.inline 内联函数，是解决 高阶函数和闭包函数带来的开销问题。
+    - 转成字节码后，可以看到，减去了入栈出栈。
+    - 内联函数中，return可以写，支持非局部返回
+10.inline 与 reified 一起使用.
+    -reified 具体化类型参数
+    -noinlined 在内联函数内部的lambda表达式，其形成也是inline的，为了使函数参数被其他非内联函数使用，则需要使用noinline这个标记，就把这个形参恢复正常了。
+11.crossinline 非局部返回标记。为了不让内联函数的lamda表达式返回，直接写return是错的，需要写return@flag

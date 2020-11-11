@@ -101,7 +101,7 @@ class my{
 fun dfs(graph:Int){
     var school:String ="good"
     fun dfs(name:String,age:Int){
-        if(age>school.length){//局部函数可以方位外部函数的局部变量
+        if(age>school.length){//局部函数可以访问外部函数的局部变量
             return
         }
     }

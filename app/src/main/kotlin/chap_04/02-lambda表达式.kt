@@ -25,7 +25,7 @@ package chap_04
  * 在kotlin有个约定，如果函数最后一个参数时函数，那么作为相应参数传入lambda表达式可以放在圆括号之外
  * val product = items.fold(1){acc,e -> acc*e}  也称为拖尾lambda表达式
  *
- * 如果lambda表达式时调用时唯一的参数，那么圆括号可以省略
+ * 如果lambda表达式是调用时唯一的参数，那么圆括号可以省略
  * run { println("..") }
  *
  * */
