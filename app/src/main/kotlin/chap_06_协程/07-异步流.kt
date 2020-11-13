@@ -1,11 +1,8 @@
 package chap_06_协程
 
 import android.renderscript.Sampler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.runBlocking
 import kotlin.system.measureNanoTime
 import kotlin.system.measureTimeMillis
 
@@ -149,7 +146,7 @@ suspend fun performRequest(request:Int):String{
 //}
 
 /** 末端流操作符
- * 用语启动流搜集的挂起函数 collect是最基础的末端操作符。还有一些其他的
+ * 用于启动流搜集的挂起函数 collect是最基础的末端操作符。还有一些其他的
  * -转化为各种集合 ，如toList 与 toSet
  * -获取第一个first值与确保流发射单个single值的操作符
  * -使用reduce与fold将流规约到单个值
@@ -197,7 +194,7 @@ suspend fun performRequest(request:Int):String{
  * 通过withContext 用于改变上下文，但是flow{..}必须遵守上下文保存属性，不允许从其他上下文中发射
  * */
 //fun simple(): Flow<Int> = flow {
-//    withContext(Dispatchers.Default){ //会产生异常
+//    withContext(Dispatchers.Default){ //会产生异常,因为发射与收集流的上下文不一致导致的 。
 //            for( i in 1..4){
 //            Thread.sleep(100)
 //            emit(i)
@@ -211,18 +208,18 @@ suspend fun performRequest(request:Int):String{
 /** flowOn操作符，可以更改流发射的上下文
  * 改变了 流的顺序，收集和发射在不同的协程里并行执行
  * */
-/*fun simple(): Flow<Int> = flow{
-    for (i in 1..3){
-        Thread.sleep(100)
-        println("emiiting $i  ${Thread.currentThread().name}")
-        emit(i)
-    }
-}.flowOn(Dispatchers.Default) //在流构建器中改变消耗CPU代码上下文的正确方式
-fun main()= runBlocking {
-    simple().collect { value ->
-        println("collected $value ${Thread.currentThread().name}")
-    }
-}*/
+//fun simple(): Flow<Int> = flow{
+//    for (i in 1..3){
+//        Thread.sleep(100)
+//        println("emiiting $i  ${Thread.currentThread().name}")
+//        emit(i)
+//    }
+//}.flowOn(Dispatchers.Default) //在流构建器中改变消耗CPU代码上下文的正确方式
+//fun main()= runBlocking {
+//    simple().collect { value ->
+//        println("collected $value ${Thread.currentThread().name}")
+//    }
+//}
 
 /** 缓冲 */
 
@@ -270,7 +267,7 @@ fun main()= runBlocking {
 /** 处理最新值
  * 当发射器和收集器很慢的时候，合并是加快处理速度的一种方式。另一种方式是取消收集器，每次发射新值的时候重新启动它。
  * */
-
+//
 //fun simple():Flow<Int> = flow {
 //    for(i in 1..3){
 //        delay(100)
@@ -294,7 +291,7 @@ fun main()= runBlocking {
 //suspend fun main(){
 //    val nums = (1..3).asFlow()
 //    val strs = flowOf("one","two","three")
-//    nums.zip(strs) {a,b ->"$a -> $b"}//组合单个字符串
+//    nums.zip(strs) {a,b ->"$a -> $b"}//组合单个字符串 ，a数字，b 字符串
 //        .collect { println(it) }
 //}
 
@@ -305,7 +302,7 @@ fun main()= runBlocking {
 //    val time = System.currentTimeMillis()
 //    nums.combine(strs){a,b -> "$a -> $b"}
 //        .collect { value ->
-//            println("$value at ${System.currentTimeMillis()-time} ms from start")
+//            println("$value at ${System.currentTimeMillis()-time} ms from start") //耗时没有规律
 //        }
 //}
 
@@ -319,7 +316,7 @@ fun requestFlow(i:Int):Flow<String> = flow {
     emit("$i: second")
 }
 //fun main() = runBlocking<Unit> {
-//    (1..3).asFlow().map { requestFlow(it) } //这将得到一个包含流的流（Flow<Flow<String>）
+//    (1..3).asFlow().map { requestFlow(it)  } //这将得到一个包含流的流（Flow<Flow<String>）
 //}
 
 /** flatMapConcat
@@ -335,17 +332,17 @@ fun requestFlow(i:Int):Flow<String> = flow {
 //}
 
 /** flatMapMerge
- * 并发收集所有传入的流，并将她们的值合并到一个单独的流，一遍尽快发射值
+ * 并发收集所有传入的流，并将她们的值合并到一个单独的流，以便尽快发射值
  * */
 
-//fun main()= runBlocking<Unit> {
-//    val startTime = System.currentTimeMillis()
-//    (1..3).asFlow().onEach { delay(100) }
-//        .flatMapMerge { requestFlow(it) }
-//        .collect { value ->
-//            println("$value at ${System.currentTimeMillis()-startTime} ms from start ")
-//        }
-//}
+fun main()= runBlocking<Unit> {
+    val startTime = System.currentTimeMillis()
+    (1..3).asFlow().onEach { delay(100) }
+        .flatMapMerge { requestFlow(it) }
+        .collect { value ->
+            println("$value at ${System.currentTimeMillis()-startTime} ms from start ")
+        }
+}
 
 /** flatMapLatest */
 //fun main()= runBlocking<Unit> {

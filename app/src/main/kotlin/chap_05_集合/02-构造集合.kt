@@ -12,9 +12,9 @@ fun main(){
 //    val empty = emptyList<String>()
 //
 //    /** list的初始化函数*/
-//    val doubled  = List(3,{it*2})
+//    val doubled  = List(3,{it*2}) //0，2，4
 //    println(doubled)
-//
+
 //    /** 具体类型构造函数*/
 //    val linkedlist = LinkedList<String>(listOf("one","two","three"))
 //    val presizedSet = HashSet<Int>(32)
@@ -34,7 +34,7 @@ fun main(){
 //    val copySet = sourceList.toMutableSet()
 //    copySet.add(3)
 //    copySet.add(4)
-//    println(copySet)
+//    println(copySet)//[1，2，3，4]
 
     /** 集合初始化可以限制可变性 */
 //    val sourceList = mutableListOf<Int>(1,2,3)

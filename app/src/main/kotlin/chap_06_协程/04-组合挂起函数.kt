@@ -1,6 +1,7 @@
 package chap_06_协程
 
 import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
 
 /**
  * Created by wangjiao on 2020/8/17.
@@ -18,7 +19,7 @@ suspend fun doSomethingUsefulTwo():Int{
     return 29
 }
 /** 测量执行两个挂起函数所需要的总时间*/
-//suspend fun main(){
+// suspend fun main(){
 //    GlobalScope.launch {
 //        val time = measureTimeMillis { //按顺序执行，1s后执行下一个。
 //            val one = doSomethingUsefulOne()
@@ -70,12 +71,12 @@ suspend fun doSomethingUsefulTwo():Int{
  * kotlin并不推荐这样写。
  *
  * */
-fun somethingUsefulOneAsync() = GlobalScope.async {
-    doSomethingUsefulOne()
-}
-fun somethingUsefulTwoAsync()=GlobalScope.async { //函数的返回值类型是Deferred<Int>
-    doSomethingUsefulTwo()
-}
+//fun somethingUsefulOneAsync() = GlobalScope.async {
+//    doSomethingUsefulOne()
+//}
+//fun somethingUsefulTwoAsync()=GlobalScope.async { //函数的返回值类型是Deferred<Int>
+//    doSomethingUsefulTwo()
+//}
 //fun main(){
 //    val time = measureTimeMillis {
 //        //可以在协程外，启动异步执行

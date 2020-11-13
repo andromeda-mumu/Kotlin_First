@@ -18,9 +18,9 @@ fun main(){
      * 当指定元素超出集合范围时，采用elementAtOrNull()返回null.
      * elelmentAtOrElse() 当越界时，返回对给定值调用的lambda表达式的结果
      * */
-//    val numbers = listOf("one","two","three","four","five","six")
-//    println(numbers.elementAtOrNull(5))
-//    println(numbers.elementAtOrElse(7){index->"the value for index $index is undeifined"})
+    val numbers = listOf("one","two","three","four","five","six")
+    println(numbers.elementAtOrNull(5))
+    println(numbers.elementAtOrElse(7){index->"the value for index $index is undeifined"})
 //    /** 按条件取 */
 //    println(numbers.first{it.length>3})
 //    println(numbers.last{it.startsWith("f")})
@@ -36,17 +36,17 @@ fun main(){
     /** 随机取元素   random()*/
 
     /** 检查存在与否 */
-    val numbers = listOf("one","two","three","four","five","six")
-    println(numbers.contains("four"))
-    println("zego" in numbers)
-    println(numbers.containsAll(listOf("four","two")))
-    println(numbers.containsAll(listOf("one","zero")))
-    println(numbers.isEmpty())
-    println(numbers.isNotEmpty())
-
-    val empty = emptyList<String>()
-    println(empty.isEmpty())
-    println(empty.isNotEmpty())
+//    val numbers = listOf("one","two","three","four","five","six")
+//    println(numbers.contains("four"))
+//    println("zego" in numbers)
+//    println(numbers.containsAll(listOf("four","two")))
+//    println(numbers.containsAll(listOf("one","zero")))
+//    println(numbers.isEmpty())
+//    println(numbers.isNotEmpty())
+//
+//    val empty = emptyList<String>()
+//    println(empty.isEmpty())
+//    println(empty.isNotEmpty())
 
 
 }

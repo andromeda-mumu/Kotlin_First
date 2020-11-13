@@ -26,10 +26,10 @@ fun List<String>.getShortWordsTo(shortWords:MutableList<String>,maxLength:Int){
     val articals = setOf("a","A","bb","dd","the","ane")
     shortWords -=articals
 }
-//fun main(){
-//    val words = "A LONG time ago in a galaxy far far away".split(" ")
-//    val shortWords = mutableListOf<String>()
-//    words.getShortWordsTo(shortWords,3)
-//    println(shortWords)
-//}
+fun main(){
+    val words = "A LONG time ago in a galaxy far far away".split(" ")
+    val shortWords = mutableListOf<String>()
+    words.getShortWordsTo(shortWords,3)
+    println(shortWords)
+}
 

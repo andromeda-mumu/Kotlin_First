@@ -11,5 +11,22 @@
     - 内联函数中，return可以写，支持非局部返回
 10.inline 与 reified 一起使用.
     -reified 具体化类型参数
-    -noinlined 在内联函数内部的lambda表达式，其形成也是inline的，为了使函数参数被其他非内联函数使用，则需要使用noinline这个标记，就把这个形参恢复正常了。
+    -noinlined 在内联函数内部的lambda表达式，其形参也是inline的，为了使函数参数被其他非内联函数使用，则需要使用noinline这个标记，就把这个形参恢复正常了。
 11.crossinline 非局部返回标记。为了不让内联函数的lamda表达式返回，直接写return是错的，需要写return@flag
+
+-----------集合------
+1.generateSequence(3) 这是无限的序列，从3开始的数组成集合。
+2.zip 双集合 合并。[(green,flower),...]
+3.unzip 可以将map这样的键值表，拆分成key集合，与value集合.
+4.associateWith 与 associateBy，这两个函数可以将集合进行各种处理。
+5.flatten 将嵌套的多个集合，融为一个整的集合。
+6.joinToString 将集合转成字符串，其实就是没有中括号了。
+    - 参数。将集合根据参数来得到需要的格式的字符串。
+7.chunked，将一个集合分解成多个集合。
+8.elementAtOrElse(index) 当越界时，返回lambda表达式内容。否则就返回index对应的值。
+
+
+-------------协程-------------
+1.通过withContext()来改变协程的上下文。其实就是改变线程的ThreadName
+2.
+

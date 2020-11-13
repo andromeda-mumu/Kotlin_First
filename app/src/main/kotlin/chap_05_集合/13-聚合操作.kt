@@ -39,7 +39,7 @@ fun main(){
 
     /**
      * reduce()与fold() 操作有2个参数：先前的累积值和集合元素
-     * reduce是第一个和第二个元素作为参数，英雌第一个元素不会加倍
+     * reduce是第一个和第二个元素作为参数，因此第一个元素不会加倍
      * */
 //    val numbers= listOf(5,2,10,4)
 //    val sum = numbers.reduce{sum,element -> sum+element}

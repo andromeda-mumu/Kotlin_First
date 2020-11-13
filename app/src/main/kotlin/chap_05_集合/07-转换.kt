@@ -86,7 +86,7 @@ fun main(){
 //    println(numbers.joinToString(limit=10,truncated = "..."))
 
     /** 自定义元素本身的表示形式，transform函数*/
-    val numbers =listOf("one","two","three","four")
-    println(numbers.joinToString { "element:${it.toUpperCase()}" })
+//    val numbers =listOf("one","two","three","four")
+//    println(numbers.joinToString { "element:${it.toUpperCase()}" })
 
 }

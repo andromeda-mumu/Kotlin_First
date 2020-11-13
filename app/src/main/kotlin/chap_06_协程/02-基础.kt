@@ -1,8 +1,10 @@
 package chap_06_协程
 
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
 
 /**
  * Created by wangjiao on 2020/8/14.
@@ -20,12 +22,12 @@ import kotlinx.coroutines.launch
      * 在GlobalScope中启动一个新的协程，那意味着，新协程的生命周期只受整个应用程序的生命周期限制
      * */
 
-    /** 编译不通过，delay是一个特殊的挂起函数，它不会造成线程阻塞，但是会 挂起协程，兵器只能在协程中使用*/
+    /** 编译不通过，delay是一个特殊的挂起函数，它不会造成线程阻塞，但是会 挂起协程，并且只能在协程中使用*/
 //    thread { delay(1000L) }
 
 
     /** 桥接阻塞 和 非桥接阻塞的世界
-     * 一下只使用了非阻塞的函数delay,调用runBlocking的主线程会一直阻塞知道runBolcking内部 的协程执行完毕
+     * 一下只使用了非阻塞的函数delay,调用runBlocking的主线程会一直阻塞直到runBolcking内部 的协程执行完毕
      * */
 //    GlobalScope.launch {
 //        delay(1000L)
@@ -53,7 +55,7 @@ import kotlinx.coroutines.launch
 //        println("world")
 //    }
 //    println("hello")
-//    job.join() //等待知道子协程执行结束
+//    job.join() //等待直到子协程执行结束
 //}
 
 /** 结构化并发 */
@@ -89,8 +91,6 @@ import kotlinx.coroutines.launch
 /** 提取函数重构
  * 将launch{}内部的代码块提取到独立的函数中，当对这段代码执行“提取函数”重构时，你会得到一个带有suspend修饰符的新函数，这是第一个挂起函数。
  * 在协程内部可以像普通函数一样使用挂起函数，
- *
- *
  * */
 //fun main()= runBlocking {
 //    launch{
@@ -114,16 +114,16 @@ import kotlinx.coroutines.launch
 /** 全局协程像守护线程
  * 在GlobalScope中启动的活动协程并不会使进程保活，他们像守护进程一样。
  * */
-suspend fun main(){
-    GlobalScope.launch {
-        repeat(1000){
-            i->
-            println("i'm sleeping $i")
-            delay(500L)
-        }
-    }
-    delay(2300L) //在延迟后退出
-}
+//suspend fun main(){
+//    GlobalScope.launch {
+//        repeat(1000){
+//            i->
+//            println("i'm sleeping $i")
+//            delay(500L)
+//        }
+//    }
+//    delay(2300L) //在延迟后退出
+//}
 
 
 
