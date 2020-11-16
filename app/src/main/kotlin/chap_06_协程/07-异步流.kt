@@ -335,20 +335,20 @@ fun requestFlow(i:Int):Flow<String> = flow {
  * 并发收集所有传入的流，并将她们的值合并到一个单独的流，以便尽快发射值
  * */
 
-fun main()= runBlocking<Unit> {
-    val startTime = System.currentTimeMillis()
-    (1..3).asFlow().onEach { delay(100) }
-        .flatMapMerge { requestFlow(it) }
-        .collect { value ->
-            println("$value at ${System.currentTimeMillis()-startTime} ms from start ")
-        }
-}
+//fun main()= runBlocking<Unit> {
+//    val startTime = System.currentTimeMillis()
+//    (1..3).asFlow().onEach { delay(100) }
+//        .flatMapMerge { requestFlow(it) }
+//        .collect { value ->
+//            println("$value at ${System.currentTimeMillis()-startTime} ms from start ")
+//        }
+//}
 
 /** flatMapLatest */
 //fun main()= runBlocking<Unit> {
 //    val startTime = System.currentTimeMillis()
 //    (1..3).asFlow().onEach { delay(100) }
-//        .flatMapLatest { requestFlow(it) }
+//        .flatMapLatest { requestFlow(it) } //最后一个有sencond.
 //        .collect { value ->
 //            println("$value at ${System.currentTimeMillis()-startTime} ms from start ")
 //        }
@@ -380,8 +380,8 @@ fun main()= runBlocking<Unit> {
 //        emit(i)
 //    }
 //}.map { value->
-//    check(value <=1){"crashed on $value "}
-//    "string $value"
+//    check(value <=1){"crashed on $value "} //不执行
+//    "string $value" //只发出了1 ,其他数据异常
 //}
 //fun main()= runBlocking<Unit> {
 //    try{
@@ -392,7 +392,7 @@ fun main()= runBlocking<Unit> {
 //}
 /** 异常透明性*/
 //fun main()= runBlocking<Unit> {
-//    simple().catch { e -> emit("caught $e") }.collect { value -> println(value) }
+//    simple().catch { e -> emit("caught $e") }.collect { value -> println(value) } //？将catch也作为了一个lambda参数吧
 //}
 
 /** 透明捕获 如果collect{} 块抛出异常，则异常会逃逸*/
@@ -405,7 +405,7 @@ fun main()= runBlocking<Unit> {
 //fun  main() = runBlocking<Unit> {
 //    simple().catch { e-> println("caught $e") }
 //        .collect { value ->
-//            check(value <=1){"collected $value"}
+//            check(value <=1){"collected $value"}  //异常是在collect中发出的，因此会运行报错。
 //            println(value)
 //        }
 //}
@@ -424,24 +424,24 @@ fun main()= runBlocking<Unit> {
 /**--------------流完成----------------*/
 /**
  * 命令式finally块
- * 除了try/catch 之外，收集器还能使用finally块再collect完成时执行一个动作
+ * 除了try/catch 之外，收集器还能使用finally块在collect完成时执行一个动作
  * */
 //fun simple():Flow<Int> = (1..3).asFlow()
 //fun main()= runBlocking<Unit> {
 //    try{
 //        simple().collect { value -> println(value) }
 //    }finally {
-//        println("done")
+//        println("done") //必执行
 //    }
 //}
 
 /** 声明式处理 onCompletion 过度操作符
  * */
 //fun main() = runBlocking<Unit> {
-//    simple().onCompletion { println("done") }
+//    simple().onCompletion { println("done") } //这个是代表完成之后，再执行的
 //        .collect { value -> println(value) }
 //}
-/** onCompletion优点是：lambda表达式的可空参数 Throwable可以用于确定流手机是正常完成还是有异常发生。
+/** onCompletion优点是：lambda表达式的可空参数 Throwable可以用于确定流程序是正常完成还是有异常发生。
  * onCompletion 操作符与catch不同，它不处理异常。异常会流向下游，并提供给onCompletion操作符，并可以由catch操作符处理 * */
 //fun simple():Flow<Int> = flow{
 //    emit(1)
@@ -450,7 +450,7 @@ fun main()= runBlocking<Unit> {
 //fun main()=runBlocking<Unit>{
 //    simple()
 //        .onCompletion { cause ->if (cause!=null) println("Flow completed exceptionally") }
-//        .catch { cause -> println("caught exception") }
+//        .catch { cause -> println("caught exception") } //在onCompletion后面。
 //        .collect { value -> println(value) }
 //}
 
@@ -462,7 +462,7 @@ fun main()= runBlocking<Unit> {
 ////    println("done")
 ////}
 //
-///** 使用launchIn末端操作符可以在这里派上用场。不用等待流收集玩，即可立即执行下一步代码*/
+///** 使用launchIn末端操作符可以在这里派上用场。不用等待流收集完，即可立即执行下一步代码*/
 //fun main()= runBlocking<Unit> {
 //    events().onEach { event-> println("event $event") }
 //        .launchIn(this)//在单独协程中执行流

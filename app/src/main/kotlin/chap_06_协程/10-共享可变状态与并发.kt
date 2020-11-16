@@ -28,7 +28,7 @@ suspend fun massiveRun(action:suspend () ->Unit){
     }
     println("Completed ${n*k} actions in $time ms")
 }
-
+//
 //@Volatile
 //var counter =0
 //fun main()= runBlocking {
@@ -37,7 +37,7 @@ suspend fun massiveRun(action:suspend () ->Unit){
 //            counter++
 //        }
 //    }
-//    println("Counter = $counter")
+//    println("Counter = $counter") //多个协程，访问同一个数据，造成数据不正确，应该加上同步代码防止共享数据的异常
 //}
 
 /** 100个协程在多个线程中同时递增计算，但没有做并发处理，因此结果不可能打印出counter=1000000*/
@@ -49,7 +49,7 @@ suspend fun massiveRun(action:suspend () ->Unit){
  *
  * */
 
-//val counter = AtomicInteger()
+//val counter = AtomicInteger() //这是线程安全的数据结构，可以随便操作
 //fun main() = runBlocking {
 //    withContext(Dispatchers.Default){
 //        massiveRun {
@@ -63,17 +63,17 @@ suspend fun massiveRun(action:suspend () ->Unit){
  * 这段代码运行非常缓慢，每个增量操作都得使用[withContext(counterContext)]块从多线程Dispatchers.Default上下文切换到单线程上下文。
  * */
 //val  conterContext = newSingleThreadContext("counterContext")
-////var counter =0
-////fun main()= runBlocking {
-////    withContext(Dispatchers.Default){
-////        massiveRun {
-////            withContext(conterContext){
-////                counter++
-////            }
-////        }
-////    }
-////    println("counter = $counter")
-////}
+//var counter =0
+//fun main()= runBlocking {
+//    withContext(Dispatchers.Default){
+//        massiveRun {
+//            withContext(conterContext){ //从多线程切换到单线程。就能保证数据结果正确了
+//                counter++
+//            }
+//        }
+//    }
+//    println("counter = $counter") //耗时462ms
+//}
 
 /** 以粗粒度限制线程  在单线程上线问中运行每个协程*/
 //val counterContext = newSingleThreadContext("CounterContext")
@@ -85,7 +85,7 @@ suspend fun massiveRun(action:suspend () ->Unit){
 //            counter++
 //        }
 //    }
-//    println("counter =$counter")
+//    println("counter =$counter")//耗时25ms
 //}
 
 /** 互斥  使用永远不会同时执行的 关键代码块 来保护共享状态的所有修改。在阻塞的世界中，通常会为此目的使用 synchronized 或者 ReentrantLock 。在协程中的替代品时 Mutex .
@@ -98,7 +98,7 @@ suspend fun massiveRun(action:suspend () ->Unit){
 //fun main()= runBlocking {
 //    withContext(Dispatchers.Default){
 //        massiveRun {
-//            mutex.withLock {
+//            mutex.withLock {//是一个挂起函数，不会阻塞线程
 //                counter++
 //            }
 //        }
@@ -142,8 +142,8 @@ fun main()= runBlocking<Unit> {
     println("couter ${response.await()}")
     counter.close()
 }
-/** actor本身执行时所处上下无关紧要，一个actor时一个协程，而一个协程是按顺序执行的，因此将状态限制到特定协程可以解决共享可变状态的问题。
- * 实际上，actor可以修改自己的私有状态， 但之恶能通过消息互相影响（避免任何锁定）
+/** actor本身执行时所处上下无关紧要，一个actor是一个协程，而一个协程是按顺序执行的，因此将状态限制到特定协程可以解决共享可变状态的问题。
+ * 实际上，actor可以修改自己的私有状态， 但只能通过消息互相影响（避免任何锁定）
  * actor在高负载下，比锁更有效，因为这种情况下，它总是有工作要做，而且根本不需要切换到不同的上下文。
  *
  * 注意，actor协程构建器是一个双重的produce协程构建器。一个actor与它接收消息的通道相关联，而一个producer与它发生元素的通道相关联

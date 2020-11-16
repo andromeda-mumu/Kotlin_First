@@ -17,7 +17,7 @@ import kotlinx.coroutines.channels.*
 //    launch {
 //        for(x in 1..5) channel.send(x*x)
 //    }
-//    repeat(5){ println(channel.receive())}
+//    repeat(5){ println(channel.receive())} //在协程间传递
 //    println("done")
 //}
 
@@ -29,10 +29,10 @@ import kotlinx.coroutines.channels.*
 //    val channel = Channel<Int>()
 //    launch {
 //        for(x in 1..5)channel.send(x*x)
-//        channel.close()
+//        channel.close() //表示已经关闭了，没有数据了。
 //    }
 //    for( y in channel) println(y)
-//    println("done")
+//    println("done") //close后才输出
 //}
 
 /** 构建通道生产者
@@ -66,7 +66,7 @@ import kotlinx.coroutines.channels.*
 //        println(square.receive())
 //    }
 //    println("done")
-//    coroutineContext.cancelChildren()//取消子协程
+//    coroutineContext.cancelChildren()//取消子协程，如果没有，程序一直不结束
 //}
 
 /** 使用管道的素数*/
@@ -75,7 +75,10 @@ import kotlinx.coroutines.channels.*
 //    while (true)send(x++)
 //}
 //fun CoroutineScope.filter(numbers:ReceiveChannel<Int>,prime:Int)=produce<Int> {
-//    for(x in numbers) if(x%prime!=0)send (x)
+//    for(x in numbers){
+//        println("x:$x,prime:$prime")
+//        if(x%prime!=0)send (x)
+//    }
 //}
 //fun main()= runBlocking {
 //    var cur = numbersFrom(2)
@@ -164,19 +167,19 @@ import kotlinx.coroutines.channels.*
 //}
 
 /** 计时器通道  */
-fun main()= runBlocking<Unit> {
-    val tickerChannel = ticker(delayMillis = 100,initialDelayMillis = 0)//创建计时通道
-    var nextElement = withTimeoutOrNull(1){tickerChannel.receive()}
-    println("initial element is available immediately : $nextElement")
-    nextElement = withTimeoutOrNull(50) {tickerChannel.receive()}
-    println("Next element is not ready in 50ms $nextElement")
-    nextElement = withTimeoutOrNull(60){tickerChannel.receive()}
-    println("Next element is ready in 100 ms :$nextElement")
-    println("consumer pauses for 150ms")
-    delay(150)
-    nextElement = withTimeoutOrNull(1){tickerChannel.receive()}
-    println("next element is available immediately after large consumer delay :$nextElement")
-    nextElement = withTimeoutOrNull(60){tickerChannel.receive()}
-    println("next element is readt 50ms after consume pause in 150ms $nextElement")
-    tickerChannel.cancel()
-}
+//fun main()= runBlocking<Unit> {
+//    val tickerChannel = ticker(delayMillis = 100,initialDelayMillis = 0)//创建计时通道
+//    var nextElement = withTimeoutOrNull(1){tickerChannel.receive()}
+//    println("initial element is available immediately : $nextElement")
+//    nextElement = withTimeoutOrNull(50) {tickerChannel.receive()}
+//    println("Next element is not ready in 50ms $nextElement")
+//    nextElement = withTimeoutOrNull(60){tickerChannel.receive()}
+//    println("Next element is ready in 100 ms :$nextElement")
+//    println("consumer pauses for 150ms")
+//    delay(150)
+//    nextElement = withTimeoutOrNull(1){tickerChannel.receive()}
+//    println("next element is available immediately after large consumer delay :$nextElement")
+//    nextElement = withTimeoutOrNull(60){tickerChannel.receive()}
+//    println("next element is readt 50ms after consume pause in 150ms $nextElement")
+//    tickerChannel.cancel()
+//}

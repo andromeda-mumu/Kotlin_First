@@ -12,7 +12,7 @@ import java.lang.IndexOutOfBoundsException
  * description:
  */
 ///** 异常的传播
-// * 协程构建器有两种形式：自动传播异常（launch 与 actor ）或向用户暴露异常（async 与 produce）当这些构建器用于创建一个根携程时，前者
+// * 协程构建器有两种形式：自动传播异常（launch 与 actor ）或向用户暴露异常（async 与 produce）当这些构建器用于创建一个根协程时，前者
 // * 这类构建器将异常视为未捕获异常，后者则依赖用户来最终消费异常，例如通过await或receive
 // ** /
 //
@@ -41,14 +41,14 @@ import java.lang.IndexOutOfBoundsException
  * 全局异常处理者就如同 Thread.defaultUncaughtExceptionHandler一样，在没有更多的指定异常处理者被注册的时候被使用。
  * uncaughtExceptionPreHandler被设置在全局协程处理者中
  * */
-//
+
 //fun main()= runBlocking {
 //    val handler = CoroutineExceptionHandler { _, throwable -> println("CoroutineExceptioHandler got $throwable") }
 //    val job = GlobalScope.launch(handler){
 //        throw AssertionError()
 //    }
 //    val deferred = GlobalScope.async(handler){
-//        throw ArithmeticException() //没有答应任何东西，依赖用户await
+//        throw ArithmeticException() //没有打印任何东西，依赖用户await
 //    }
 //    joinAll(job,deferred)
 //}
@@ -70,10 +70,12 @@ import java.lang.IndexOutOfBoundsException
 //        println("cancel child")
 //        child.cancel()
 //        child.join()
+//        println("child finish")
 //        yield()
 //        println("parent is not cancel ")
 //    }
-//    job.join()
+//    job.join()  //等待协程执行
+//    println("finish")
 //}
 
 /** 如果一个协程遇到CancellationException以外的异常，它将使用该异常取消它的父协程。
@@ -122,7 +124,7 @@ import java.lang.IndexOutOfBoundsException
 //        }
 //        launch {
 //            delay(100)
-//           throw IOException()
+//           throw IOException()  //只要一个异常输出
 //        }
 //        delay(Long.MAX_VALUE)
 //    }
@@ -137,16 +139,20 @@ import java.lang.IndexOutOfBoundsException
 //    }
 //    val job = GlobalScope.launch(handler){
 //        val inner = launch {//该站内的协程都将被取消
+//            println("111")
 //            launch {
+//                println("222")
 //                launch {
+//                    println("333")
 //                    throw IOException()//原始异常
 //                }
 //            }
 //        }
 //        try{
+//            println("444")
 //            inner.join()
 //        }catch (e:CancellationException){
-//            println("rethrowing cancellationException with original cause")
+//            println("rethrowing cancellationException with original cause") //这个优先，然后才是IOException
 //            throw  e
 //        }
 //    }
@@ -160,7 +166,7 @@ import java.lang.IndexOutOfBoundsException
  * 另一个场景：服务进程孵化一些子作业并且需要监督它们的执行，最终它们的故障并在这些子作业执行失败时重启
  * */
 
-/** 监督作业  supervisorJob 。类似常规的job,但这取消指挥向下传播*/
+/** 监督作业  supervisorJob 。类似常规的job,但这取消只会向下传播*/
 //fun main()= runBlocking {
 //    val supervisor = SupervisorJob()
 //    with(CoroutineScope(coroutineContext+supervisor)){
@@ -212,19 +218,19 @@ import java.lang.IndexOutOfBoundsException
 //}
 
 /** 监督协程中的异常 */
-fun main()= runBlocking {
-    val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        println("${Thread.currentThread().name} CoroutineExceptionHandler got $throwable")
-    }
-    supervisorScope {
-        launch(handler){
-            println("${Thread.currentThread().name} the child throws an exception")
-            throw AssertionError()
-        }
-        println("${Thread.currentThread().name} the scope is completing")
-    }
-    println("${Thread.currentThread().name} the scope is completed")
-}
+//fun main()= runBlocking {
+//    val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+//        println("${Thread.currentThread().name} CoroutineExceptionHandler got $throwable")
+//    }
+//    supervisorScope {
+//        launch(handler){
+//            println("${Thread.currentThread().name} the child throws an exception")
+//            throw AssertionError()
+//        }
+//        println("${Thread.currentThread().name} the scope is completing")
+//    }
+//    println("${Thread.currentThread().name} the scope is completed")
+//}
 
 
 
