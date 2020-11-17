@@ -7,23 +7,23 @@ import kotlin.random.Random
  * Created by wangjiao on 2020/8/28.
  * description:
  */
-/**kotlin标注库包含几个函数，它们唯一的目的是在对象的上下文中执行代码块，当对一个对象调用这样的函数并提供一个lambda表达式时，它会
+/**kotlin标准库包含几个函数，它们唯一的目的是在对象的上下文中执行代码块，当对一个对象调用这样的函数并提供一个lambda表达式时，它会
  * 形成一个临时作用域，在此作用域中，可以访问该对象而无需其名称。这些函数称为作用域函数
  * 共有五个：let,run,with,apply ,also
  *
  * 这样函数基本上做了同样的事情：在一个对象上执行一个代码块，不同的是 这个对象在块中如何使用，以及整个表达式的结果是什么
  * */
-//class PersonA(name:String,age:Int,pos:String){
-//    fun moveTo(s:String){
-//
-//    }
-//    fun increameetAge(){
-//        ((::age).get())++
-//    }
-//}
+class PersonA(name:String, val age:Int, pos:String){
+    fun moveTo(s:String){
+        println(s)
+    }
+    fun increameetAge(){
+        ((::age).get())
+    }
+}
 //
 //fun main() {
-//    PersonA("Alice",20,"Ad").let{
+//    PersonA("Alice",20,"Ad").let{  //其实类似于builder
 //        println(it)
 //        it.moveTo("london")
 //        it.increameetAge()
@@ -31,11 +31,11 @@ import kotlin.random.Random
 //    }
 //
 //    //如果不使用let，那就需要引入新的变量
-//    val alice = PersonA("alice",20,"china")
-//    println(alice)
-//    alice.moveTo("london")
-//    alice.increameetAge()
-//    println(alice)
+////    val alice = PersonA("alice",20,"china")
+////    println(alice)
+////    alice.moveTo("london")
+////    alice.increameetAge()
+////    println(alice)
 //}
 
 /** 区别
@@ -90,8 +90,8 @@ import kotlin.random.Random
 /**
  * 返回值
  * 根据返回值结果：作用域函数可以分为以下两类：
- * -apply 及also返回上下文对象
- * - let run with 返回lambda表达式结果
+ * -apply 及 also返回上下文对象
+ * -let run with 返回lambda表达式结果
  * */
 /** 上下文对象  链式调用*/
 //val numberList = mutableListOf<Double>()
@@ -100,19 +100,22 @@ import kotlin.random.Random
 //        println("populating the list")
 //    }.apply {
 //        add(1.3)
+//        add(0.3)
 //        add(3.4)
 //        add(5.3)
 //    }.also {
 //        println("sorting the list")
 //    }.sort()
+//
+//    println(numberList)
 //}
 
 /** 还可以用在返回上下文对象的函数的return语句中*/
-fun getRandomInt():Int{
-    return Random.nextInt(100).also{
-        println(" value $it")
-    }
-}
+//fun getRandomInt():Int{
+//    return Random.nextInt(100).also{
+//        println(" value $it")
+//    }
+//}
 
 /** lambda表达式结果 */
 //fun main() {
@@ -144,9 +147,9 @@ fun getRandomInt():Int{
 ////    println(resultList)
 //
 //    //改用let
-////    numbers.map{it.length}.filter { it>3 }.let {
-////        println(it)
-////    }
+//    numbers.map{it.length}.filter { it>3 }.let {
+//        println(it)
+//    }
 //
 //    //若代码块仅包含it作为参数的单个函数，则可以使用方法引用::代替lambda表达式
 //    numbers.map{it.length}.filter { it>3 }.let(::println)
@@ -200,7 +203,7 @@ fun getRandomInt():Int{
 //        port = 8080
 //        query(perpareResult()+"to port $port")
 //    }
-    //使用let
+////    使用let
 //    val letResult = service.let{
 //        it.port =8080
 //        it.query("xxx")
@@ -218,6 +221,7 @@ fun getRandomInt():Int{
 //    for (match in hex.findAll("+1234 -FFFF not-a-number")){
 //        println(match.value)
 //    }
+//
 //}
 
 /** apply
@@ -225,7 +229,7 @@ fun getRandomInt():Int{
  * */
 //fun main() {
 //    val dama = Person("adam").apply{
-//        aga =31
+//        age =31
 //        city ="london"
 //    }
 //    println(dama)
@@ -255,12 +259,12 @@ fun getRandomInt():Int{
 /**
  * 当在takeIf及takeUnless之后链式调用其他函数，不要忘记执行空检查或安全调用（？.）因为他们的返回值可为空
  * */
-//fun main() {
-//    val str =""
-//    val caps = str.takeIf {it.isNotEmpty() }?.toUpperCase()
-////    val caps2 = str.takeIf{ it.isNotEmpty() }.toUpperCase() //编译不通过
-//    println(caps)
-//}
+fun main() {
+    val str =""
+    val caps = str.takeIf {it.isNotEmpty() }?.toUpperCase()
+//    val caps2 = str.takeIf{ it.isNotEmpty() }.toUpperCase() //编译不通过
+    println(caps)
+}
 
 /**
  * takeIf与takeUnless与作用域函数一起特别有用。如let连接他们，以便在给定谓词匹配的对象上运行代码块。因此，在对象上调用takeIf ，然后通过安全调用(?.)调用let,对于
@@ -272,10 +276,10 @@ fun displaySubstringPosition(input:String,sub:String){//其实，这个组合就
         println("its start position is $it")
     }
 }
-fun main() {
-    displaySubstringPosition("abc","a")
-    displaySubstringPosition("qwer","as")
-}
+//fun main() {
+//    displaySubstringPosition("abc","a")
+//    displaySubstringPosition("qwer","as")
+//}
 
 
 

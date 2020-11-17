@@ -22,7 +22,7 @@ import java.io.File
 /** 智能替换
  * 适用于以下规则
  * - val局部变量 ---总是可以
- * -val属性 -如果属性是privarte或internal，或者该检测在声明属性的同意模块中执行。不适用与open的属性 或具有自定义getter的属性
+ * -val属性 -如果属性是privarte或internal，或者该检测在声明属性的同一模块中执行。不适用于open的属性 或具有自定义getter的属性
  * -var局部变量--- 如果变量在检测和使用之间没有修改。没有在会修改它的lambda中捕获，并且不是局部委托属性
  * -var属性 绝不可能
  * */
@@ -34,14 +34,14 @@ import java.io.File
 
 /** 不安全的转换操作符 as */
 //fun main() {
-//    val y = null
-//    val x:String? = y  as String?
+//    val y = 12
+//    val x:String? = y  as String?  //as 转换报错异常
 //    println(x)
 //}
 
 /** 安全的可空转换操作符  .as？ 在失败的时候返回null */
 //fun main() {
-//    val y = "10"
+//    val y = 123
 //    val x :String? = y as? String
 //    println(x)
 //}
@@ -70,7 +70,7 @@ import java.io.File
 //}
 //fun main() {
 //    val intsFile = File("ints.dictionary")
-////    val intsDictionary:Map<String,Int> = readDictionary(intsFile) as Map<String ,Int> //编译不通过
+//    val intsDictionary:Map<String,Int> = readDictionary(intsFile) as Map<String ,Int> //编译不通过
 //}
 
 /** */
@@ -78,3 +78,9 @@ inline fun <reified  T> List<*>.asListOfType():List<T>?=
     if(all {it is T})
         this as List<T>
     else null
+
+fun main() {
+    val a = listOf<Int>(11,22,30)
+   val b = a.asListOfType<Char>()
+    println(b)
+}

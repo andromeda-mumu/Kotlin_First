@@ -1,17 +1,22 @@
 package chap_08_更多语言结构
 
+import android.graphics.Point
+
 
 /**
  * Created by wangjiao on 2020/8/27.
  * description:
  */
 /** 把一个对象 解构 成很多变量会很方便*/
-//class person
+//class person(name:String,age:Int)
 //fun main(){
 //    val (name,age)=person
 //    //可以独立使用
 //    println(name)
 //    println(age)
+//    for((key,value) in map){
+//       ...
+//    }
 //
 //    /** 任何表达式都可以出现在解构声明的右侧，只要对它调用所需数量的component函数即可。*/
 //    for((a,b) in collection){}
@@ -19,14 +24,17 @@ package chap_08_更多语言结构
 //
 //}
 
+
+
 /** 从函数中返回两个变量 */
-//data class Result(val result:Int,val status :Status)
-//fun method():Result{
-//    return Result(result,stauts)
-//}
-//fun main(){
-//    val (result,status) = method()
-//}
+data class Result(val result:Int,val status :String)
+fun method():Result{
+    return Result(1,"ab")
+}
+fun main(){
+    val (result,status) = method()
+    println(status)
+}
 
 /**
  * 下划线用语未使用的变量 ，以这种方式跳过组件，不会调用相应的componentN()操作符函数

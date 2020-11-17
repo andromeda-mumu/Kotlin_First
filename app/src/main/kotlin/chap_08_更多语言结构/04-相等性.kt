@@ -5,7 +5,7 @@ package chap_08_更多语言结构
  * description:
  */
 /**
- * -结构限定 equal
+ * -结构相等 equal
  * -引用相等
  *
  * 结构相等由==（！=）操作判断，a==b 会翻译成 a?.equals(b) ?:(b===null)

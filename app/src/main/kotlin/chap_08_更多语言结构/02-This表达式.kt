@@ -47,5 +47,5 @@ class A {
 
 fun main() {
     A().invokePrintLine()
-    A().invokePrintLine(omitThis = true) //和文档结果不同，这里打印的是 Member function
+    A().invokePrintLine(true) //和文档结果不同，这里打印的是 Member function
 }

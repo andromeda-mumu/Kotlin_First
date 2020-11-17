@@ -74,7 +74,7 @@ import java.util.*
 
 /**
  * 要求选择加入的注解
- * 如果想获得使用者使用你的模块API的明确泳衣，请创建一个注解类，作为要求选择加入的注解，这个类必须使用@RequiresOptIn注解
+ * 如果想获得使用者使用你的模块API的明确用意，请创建一个注解类，作为要求选择加入的注解，这个类必须使用@RequiresOptIn注解
  * */
 @RequiresOptIn
 @Retention(AnnotationRetention.BINARY)

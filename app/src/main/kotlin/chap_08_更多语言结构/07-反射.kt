@@ -35,13 +35,13 @@ fun isOdd(s:String) =s=="brilling"||s=="slitg"||s=="tonve"
 val predicate:(String)->Boolean =::isOdd  //引用到isOdd(x:String)
 
 /** 如果需要使用类的成员函数或扩展函数，它需要是限定的，如 String::toCharArray
- *  即使以扩展函数的引用初始化一个变量，其推断出的函数类型也会没有接收者（它会有一个接收者对象的额外参数） 如需改为带有接收者的函数类型，徐指明其类型
+ *  即使以扩展函数的引用初始化一个变量，其推断出的函数类型也会没有接收者（它会有一个接收者对象的额外参数） 如需改为带有接收者的函数类型，需指明其类型
  * */
 val isEmptyStringList:List<String>.()->Boolean = List<String>::isEmpty
 
 /** 函数组合*/
 fun <A,B,C> compose(f:(B) -> C,g:(A)->B):(A)->C{
-    return {x->f(g(x))}
+    return {x->f(g(x))} //g(x)得到一个值，作为f(x)函数的参数。
 }
 fun length(s:String) = s.length
 //fun main() {
@@ -57,14 +57,14 @@ fun length(s:String) = s.length
  * */
 val x =1
 //fun main() {
-//    println(::x.get())
-//    println(::x.name)
+//    println(::x.get()) //::X 是一个KProperty属性对象，那么get()方法可以得到其值
+//    println(::x.name)//name可以得到KProperty的名字
 //}
 
 /** 对于可变属性，如var y =1 ,::y 返回KMutableProperty<Int>类型的一个值，该类型有一个set()方法*/
 var y=1
 //fun main() {
-//    ::y.set(2)
+//    ::y.set(2) //对y这个属性对象设置一个值2
 //    println(y)
 //
 //    //属性引用可以用在预期具有单个泛型参数的函数的地方
@@ -75,10 +75,10 @@ var y=1
 /**
  * 要访问类的成员属性
  * */
-//class AA(val p:Int)
+//class AA2(val p:Int)
 //fun main() {
-//    val prop = AA::p
-//    println(prop.get(AA(1)))
+//    val prop = AA2::p //获得p属性
+//    println(prop.get(AA2(1))) //获得AA2(1)这个类的p值
 //}
 
 /** 对于扩展属性 */
@@ -106,7 +106,7 @@ fun getKClass(o:Any): KClass<Any> = o.javaClass.kotlin
  * 通过使用::操作符并添加类名类引用构造函数，
  *
  * */
-class Foo
+//class Foo
 //fun func(factory:() ->Foo){
 //    val x:Foo =factory()
 //}
@@ -146,12 +146,17 @@ val matches:(Regex,CharSequence) ->Boolean = Regex::matches
  * inner类的构造函数的绑定的可调用引用可通过提供外部类的实例来获得
  * */
 class Outer{
-    inner class Inner
+    inner class Inner{
+        init {
+            println("嘿嘿")
+        }
+    }
 }
 
 fun main() {
     val o =Outer()
-    val boundInnerCtor = o::Inner
+    val boundInnerCtor = o::Inner //inner的构造函数
+    boundInnerCtor()
 }
 
 
